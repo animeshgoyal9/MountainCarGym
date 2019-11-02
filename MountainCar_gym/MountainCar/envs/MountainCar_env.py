@@ -31,10 +31,12 @@ class MountainCarenv(gym.Env):
     current_action = 0
     def __init__(self):
         
+        self.goal_position = 50
+        self.goal_velocity = 0
         self.action_space = spaces.Discrete(len(action_set_list))
         
-        low = np.array([-1.2, -0.07])
-        high = np.array([0.5, 0.07])
+        low = np.array([-120, -7])
+        high = np.array([50, 7])
         
         self.observation_space = spaces.Box(low, high, dtype=np.float32, shape=None)
 
@@ -50,7 +52,7 @@ class MountainCarenv(gym.Env):
         if self.curr_episode == MAX_TIMESTEP:
 
           print("Episode completed")
-          self.action_episode_memory += 1
+          # self.action_episode_memory += 1
           print("Action Count")
 
         self.current_action = action
@@ -60,9 +62,13 @@ class MountainCarenv(gym.Env):
         print("Current Location: ", self.x, ", ", self.v)
 
         self.state = (self.x, self.v)
-        reward = self.x
-
-        return np.array(self.state), reward, self.curr_episode , {}
+        # reward = self.x
+        # if(self.x == 0.5):
+        #     reward = 25
+        reward =-1
+        done = bool(self.x >= self.goal_position and self.v >= self.goal_velocity)
+        # return np.array(self.state), reward, self.curr_episode , {}
+        return np.array(self.state), reward, done , {}
 
     def reset(self):
         self.curr_episode = 0
